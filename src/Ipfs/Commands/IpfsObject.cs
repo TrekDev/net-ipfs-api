@@ -88,7 +88,12 @@ namespace Ipfs.Commands
 
             flags.Add("encoding", GetIpfsEncodingValue(encoding));
 
-            return await ExecuteGetAsync("put", data, flags);
+            MultipartFormDataContent multiContent = new MultipartFormDataContent();
+            StringContent sc = new StringContent(data);
+            sc.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+            multiContent.Add(sc, "file", "file");
+
+            return await ExecutePostAsync("put", null, flags, multiContent);
         }
 
         /// <summary>
