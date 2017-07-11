@@ -353,6 +353,25 @@ namespace Ipfs.Commands
         }
 
         /// <summary>
+        /// Shuts down the IPFS daemon
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <remarks>Currently there is no way to determine whether or not the command succeeded
+        ///          since the daemon shuts down before sending a response</remarks>
+        public async Task Shutdown(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            try
+            {
+                await ExecuteGetAsync("shutdown", cancellationToken);
+            }
+            catch (HttpRequestException)
+            {                
+                /* Currently shutdown always results in a HttpRequestException 
+                 * because the daemon shuts down before sending a response */
+            }
+        }
+
+        /// <summary>
         /// An introduction to IPFS
         ///
         /// This is a tour that takes you through various IPFS concepts,
