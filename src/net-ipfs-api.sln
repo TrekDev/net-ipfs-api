@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ipfs", "Ipfs\Ipfs.csproj", "{2DB66324-145D-4703-BD69-5E231609AFF8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ipfs.Test", "Ipfs.Test\Ipfs.Test.csproj", "{90C5DE61-9771-42DB-9624-FF9CDA5DC775}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ipfs.Test", "..\test\Ipfs.Test\Ipfs.Test.csproj", "{90C5DE61-9771-42DB-9624-FF9CDA5DC775}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,5 +24,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {45EED249-B001-4D95-BB2F-40C90EDE0476}
 	EndGlobalSection
 EndGlobal

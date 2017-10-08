@@ -61,7 +61,7 @@
     <Compile Include="UriHelperTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Ipfs\Ipfs.csproj">
+    <ProjectReference Include="..\..\src\Ipfs\Ipfs.csproj">
       <Project>{2db66324-145d-4703-bd69-5e231609aff8}</Project>
       <Name>Ipfs</Name>
     </ProjectReference>
