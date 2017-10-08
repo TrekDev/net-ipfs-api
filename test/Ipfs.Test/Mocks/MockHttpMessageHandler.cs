@@ -8,7 +8,7 @@ namespace Ipfs.Test.Mocks
     public class MockHttpMessageHandler : HttpMessageHandler
     {
         private readonly HttpResponseMessage _toReturn;
-        private TimeSpan _delayBeforeResponse;
+        private readonly TimeSpan _delayBeforeResponse;
 
         public HttpRequestMessage LastRequest { get; private set; }
 

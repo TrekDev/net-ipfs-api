@@ -1,8 +1,8 @@
-﻿using Ipfs.Json;
-using System;
+﻿using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Ipfs.Json;
 
 namespace Ipfs.Commands
 {
@@ -46,9 +46,9 @@ namespace Ipfs.Commands
         /// <returns></returns>
         public async Task<IpfsConfigShow> Show(CancellationToken cancellationToken = default(CancellationToken))
         {
-            HttpContent content = await ExecuteGetAsync("show", cancellationToken);
-            var json = await content.ReadAsStringAsync();
-            return _jsonSerializer.Deserialize<IpfsConfigShow>(json);
+            var content = await ExecuteGetAsync("show", cancellationToken);
+            string json = await content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<IpfsConfigShow>(json);
         }
     }
 }

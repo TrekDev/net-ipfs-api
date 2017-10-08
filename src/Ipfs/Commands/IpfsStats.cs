@@ -1,9 +1,9 @@
-﻿using Ipfs.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Ipfs.Json;
 
 namespace Ipfs.Commands
 {
@@ -22,16 +22,16 @@ namespace Ipfs.Commands
         /// <param name="interval">time interval to wait between updating output</param>
         /// <param name="cancellationToken">Token allowing you to cancel the request</param>
         /// <returns></returns>
-        public async Task<Json.IpfsStatsBw> Bw(string peer = null, string proto = null, bool poll = false, string interval = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IpfsStatsBw> Bw(string peer = null, string proto = null, bool poll = false, string interval = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var flags = new Dictionary<string, string>();
 
-            if(!String.IsNullOrEmpty(peer))
+            if(!string.IsNullOrEmpty(peer))
             {
                 flags.Add("peer", peer);
             }
 
-            if (!String.IsNullOrEmpty(proto))
+            if (!string.IsNullOrEmpty(proto))
             {
                 flags.Add("proto", proto);
             }
@@ -41,16 +41,16 @@ namespace Ipfs.Commands
                 flags.Add("poll", "true");
             }
 
-            if (!String.IsNullOrEmpty(interval))
+            if (!string.IsNullOrEmpty(interval))
             {
                 flags.Add("interval", interval);
             }
 
-            HttpContent content = await ExecuteGetAsync("bw", flags, cancellationToken);
+            var content = await ExecuteGetAsync("bw", flags, cancellationToken);
 
             string json = await content.ReadAsStringAsync();
 
-            return _jsonSerializer.Deserialize<Json.IpfsStatsBw>(json);
+            return JsonSerializer.Deserialize<IpfsStatsBw>(json);
         }
     }
 }

@@ -1,8 +1,8 @@
-﻿using Ipfs.Json;
-using System;
+﻿using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Ipfs.Json;
 
 namespace Ipfs.Commands
 {
@@ -21,7 +21,7 @@ namespace Ipfs.Commands
         /// <returns></returns>
         public async Task<byte[]> Get(string key, CancellationToken cancellationToken = default(CancellationToken))
         {
-            HttpContent content = await ExecuteGetAsync("get", key, cancellationToken);
+            var content = await ExecuteGetAsync("get", key, cancellationToken);
 
             return await content.ReadAsByteArrayAsync();
         }

@@ -12,7 +12,7 @@ namespace Ipfs
         {
             if(value.Length < 2)
             {
-                throw new ArgumentOutOfRangeException("value");
+                throw new ArgumentOutOfRangeException(nameof(value));
             }
 
             Value = value;
@@ -20,7 +20,7 @@ namespace Ipfs
 
         public MultiHash(byte fnCode, byte size, byte[] digest)
         {
-            List<byte> value = new List<byte>
+            var value = new List<byte>
             {
                 fnCode,
                 size
@@ -33,31 +33,28 @@ namespace Ipfs
 
         public byte[] Value { get; private set; }
 
-        public byte FnCode
-        {
-            get { return Value[0]; }
-        }
+        public byte FnCode => Value[0];
 
-        public byte DigestSize
-        {
-            get { return Value[1]; }
-        }
+        public byte DigestSize => Value[1];
 
-        public byte[] HashDigest
-        {
-            get { return Value.Skip(2).ToArray(); }
-        }
+        public byte[] HashDigest => Value.Skip(2).ToArray();
 
         public bool Equals(MultiHash other)
         {
-            if (other == null) return false;
+            if (other == null)
+            {
+                return false;
+            }
 
             return Equals(other.Value, Value);
         }
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(obj, this)) return true;
+            if (ReferenceEquals(obj, this))
+            {
+                return true;
+            }
 
             var other = obj as MultiHash;
 

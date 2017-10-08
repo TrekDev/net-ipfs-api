@@ -1,5 +1,4 @@
-﻿using Ipfs.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,6 +6,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
+using Ipfs.Json;
 
 namespace Ipfs.Commands
 {
@@ -33,7 +33,7 @@ namespace Ipfs.Commands
         /// <returns>The merkle node of the added file in IPFS</returns>
         public async Task<MerkleNode> Add(IpfsStream stream, bool recursive = false, bool quiet = false, bool wrapWithDirectory = false, bool trickle = false, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var flags = new Dictionary<string, string>()
+            var flags = new Dictionary<string, string>
             {
                 { "stream-channels", "true" },
                 { "progress", "false" }
@@ -49,16 +49,16 @@ namespace Ipfs.Commands
                 flags.Add("quiet", "true");
             }
 
-            MultipartFormDataContent multiContent = new MultipartFormDataContent();
-            StreamContent sc = new StreamContent(stream);
+            var multiContent = new MultipartFormDataContent();
+            var sc = new StreamContent(stream);
             sc.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
             multiContent.Add(sc, "file", stream.Name);
 
-            HttpContent content = await ExecutePostAsync("add", null, flags, multiContent, cancellationToken);
+            var content = await ExecutePostAsync("add", null, flags, multiContent, cancellationToken);
 
             string json = await content.ReadAsStringAsync();
 
-            IpfsAdd add = _jsonSerializer.Deserialize<IpfsAdd>(json);
+            var add = JsonSerializer.Deserialize<IpfsAdd>(json);
 
             return new MerkleNode(new MultiHash(add.Hash)) { Name = add.Name };
         }
@@ -83,9 +83,9 @@ namespace Ipfs.Commands
         /// <returns></returns>
         public async Task<Json.IpfsCommand> Commands(CancellationToken cancellationToken = default(CancellationToken))
         {
-            HttpContent content = await ExecuteGetAsync("commands", cancellationToken);
+            var content = await ExecuteGetAsync("commands", cancellationToken);
             string json = await content.ReadAsStringAsync();
-            return _jsonSerializer.Deserialize<Json.IpfsCommand>(json);
+            return JsonSerializer.Deserialize<Json.IpfsCommand>(json);
         }
 
         /// <summary>
@@ -228,11 +228,11 @@ namespace Ipfs.Commands
                 flags.Add("format", format);
             }
 
-            HttpContent content = await ExecuteGetAsync("id", peerId, flags, cancellationToken);
+            var content = await ExecuteGetAsync("id", peerId, flags, cancellationToken);
 
             string json = await content.ReadAsStringAsync();
 
-            Json.IpfsID id = _jsonSerializer.Deserialize<Json.IpfsID>(json);
+            var id = JsonSerializer.Deserialize<Json.IpfsID>(json);
 
             return new IpfsID
             {
@@ -257,9 +257,9 @@ namespace Ipfs.Commands
         /// <returns></returns>
         public async Task<IList<MerkleNode>> Ls(string path, CancellationToken cancellationToken = default(CancellationToken))
         {
-            HttpContent content = await ExecuteGetAsync("ls", path, cancellationToken);
+            var content = await ExecuteGetAsync("ls", path, cancellationToken);
             string json = await content.ReadAsStringAsync();
-            var jsonDict = _jsonSerializer.Deserialize<IDictionary<string, IList<MerkleNode>>>(json);
+            var jsonDict = JsonSerializer.Deserialize<IDictionary<string, IList<MerkleNode>>>(json);
             return jsonDict.Values.First();
         }
 
@@ -306,9 +306,9 @@ namespace Ipfs.Commands
         /// <returns></returns>
         public async Task<IpfsPingResult> Ping(string peerId, int? count = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            HttpContent content = await ExecuteGetAsync("ping", peerId, cancellationToken);
+            var content = await ExecuteGetAsync("ping", peerId, cancellationToken);
             string json = await content.ReadAsStringAsync();
-            return _jsonSerializer.Deserialize<IpfsPingResult>(json);
+            return JsonSerializer.Deserialize<IpfsPingResult>(json);
         }
 
         /// <summary>
@@ -382,7 +382,7 @@ namespace Ipfs.Commands
         /// <returns></returns>
         public async Task<Stream> TourCommand(string id, CancellationToken cancellationToken = default(CancellationToken))
         {
-            HttpContent content = await ExecuteGetAsync("tour", id, cancellationToken);
+            var content = await ExecuteGetAsync("tour", id, cancellationToken);
             return await content.ReadAsStreamAsync();
         }
 
@@ -394,9 +394,9 @@ namespace Ipfs.Commands
         /// <returns>Returns the current version of ipfs and exits.</returns>
         public async Task<IpfsVersion> Version(bool number = false, CancellationToken cancellationToken = default(CancellationToken))
         {
-            HttpContent content = await ExecuteGetAsync("version", cancellationToken);
+            var content = await ExecuteGetAsync("version", cancellationToken);
             string json = await content.ReadAsStringAsync();
-            return _jsonSerializer.Deserialize<IpfsVersion>(json);
+            return JsonSerializer.Deserialize<IpfsVersion>(json);
         }
     }
 }

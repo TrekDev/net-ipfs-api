@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Ipfs.Json;
-using System.Threading;
 
 namespace Ipfs.Commands
 {
@@ -32,7 +30,7 @@ namespace Ipfs.Commands
         /// <returns></returns>
         public async Task<HttpContent> Add(IEnumerable<string> peers, bool @default = false, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Dictionary<string, string> args = new Dictionary<string, string>();
+            var args = new Dictionary<string, string>();
 
             if(@default)
             {

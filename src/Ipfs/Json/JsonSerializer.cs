@@ -1,5 +1,5 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Ipfs.Json
 {
@@ -15,8 +15,8 @@ namespace Ipfs.Json
                 Converters = new List<JsonConverter>
                 {
                     new MultiHashConverter(),
-                    new MerkleNodeConverter(),
-                },
+                    new MerkleNodeConverter()
+                }
             };
         }
 

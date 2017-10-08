@@ -1,37 +1,25 @@
-﻿using Ipfs.Commands;
-using Ipfs.Json;
-using Ipfs.Utilities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Ipfs.Commands;
+using Ipfs.Json;
+using Ipfs.Utilities;
 
 namespace Ipfs
 {
     public class IpfsClient : IDisposable
     {
-        private static Uri DefaultUri
-        {
-            get { return new Uri("http://127.0.0.1:5001"); }
-        }
+        private static Uri DefaultUri => new Uri("http://127.0.0.1:5001");
 
-        private static HttpClient DefaultHttpClient
-        {
-            get { return new HttpClient(); }
-        }
+        private static HttpClient DefaultHttpClient => new HttpClient();
 
-        private static string DefaultApiPath
-        {
-            get { return "api/v0"; }
-        }
+        private static string DefaultApiPath => "api/v0";
 
-        private static IJsonSerializer DefaultJsonSerializer
-        {
-            get { return new JsonSerializer(); }
-        }
+        private static IJsonSerializer DefaultJsonSerializer => new JsonSerializer();
 
         private readonly Uri _apiUri;
         private readonly HttpClient _httpClient;
@@ -55,30 +43,21 @@ namespace Ipfs
         /// Also availible at the client level with aliases defined below
         /// </summary>
         private IpfsRoot _root;
-        public IpfsRoot Root
-        {
-            get
-            {
-                if (_root == null)
-                {
-                    _root = new IpfsRoot(_apiUri, _httpClient, _jsonSerializer);
-                }
 
-                return _root;
-            }
-        }
+        public IpfsRoot Root => _root ?? (_root = new IpfsRoot(_apiUri, _httpClient, _jsonSerializer));
 
         /// <summary>
         /// A set of commands to manipulate the bitswap agent
         /// </summary>
         private IpfsBitSwap _bitSwap;
+
         public IpfsBitSwap BitSwap
         {
             get
             {
                 if (_bitSwap == null)
                 {
-                    Uri commandUri = UriHelper.AppendPath(_apiUri, "bitswap");
+                    var commandUri = UriHelper.AppendPath(_apiUri, "bitswap");
                     _bitSwap = new IpfsBitSwap(commandUri, _httpClient, _jsonSerializer);
                 }
 
@@ -90,13 +69,14 @@ namespace Ipfs
         /// Block subcommands
         /// </summary>
         private IpfsBlock _block;
+
         public IpfsBlock Block
         {
             get
             {
                 if (_block == null)
                 {
-                    Uri commandUri = UriHelper.AppendPath(_apiUri, "block");
+                    var commandUri = UriHelper.AppendPath(_apiUri, "block");
                     _block = new IpfsBlock(commandUri, _httpClient, _jsonSerializer);
                 }
 
@@ -108,13 +88,14 @@ namespace Ipfs
         /// Bootstrap subcommands
         /// </summary>
         private IpfsBootstrap _bootstrap;
+
         public IpfsBootstrap Bootstrap
         {
             get
             {
                 if (_bootstrap == null)
                 {
-                    Uri commandUri = UriHelper.AppendPath(_apiUri, "bootstrap");
+                    var commandUri = UriHelper.AppendPath(_apiUri, "bootstrap");
                     _bootstrap = new IpfsBootstrap(commandUri, _httpClient, _jsonSerializer);
                 }
 
@@ -126,13 +107,14 @@ namespace Ipfs
         /// Config subcommands
         /// </summary>
         private IpfsConfig _config;
+
         public IpfsConfig Config
         {
             get
             {
                 if (_config == null)
                 {
-                    Uri commandUri = UriHelper.AppendPath(_apiUri, "config");
+                    var commandUri = UriHelper.AppendPath(_apiUri, "config");
                     _config = new IpfsConfig(commandUri, _httpClient, _jsonSerializer);
                 }
 
@@ -144,13 +126,14 @@ namespace Ipfs
         /// Dht subcommands
         /// </summary>
         private IpfsDht _dht;
+
         public IpfsDht Dht
         {
             get
             {
                 if (_dht == null)
                 {
-                    Uri commandUri = UriHelper.AppendPath(_apiUri, "dht");
+                    var commandUri = UriHelper.AppendPath(_apiUri, "dht");
                     _dht = new IpfsDht(commandUri, _httpClient, _jsonSerializer);
                 }
 
@@ -162,13 +145,14 @@ namespace Ipfs
         /// Diag subcommands
         /// </summary>
         private IpfsDiag _diag;
+
         public IpfsDiag Diag
         {
             get
             {
                 if (_diag == null)
                 {
-                    Uri commandUri = UriHelper.AppendPath(_apiUri, "diag");
+                    var commandUri = UriHelper.AppendPath(_apiUri, "diag");
                     _diag = new IpfsDiag(commandUri, _httpClient, _jsonSerializer);
                 }
 
@@ -180,13 +164,14 @@ namespace Ipfs
         /// Interact with ipfs objects representing Unix filesystems
         /// </summary>
         private IpfsFile _file;
+
         public IpfsFile File
         {
             get
             {
                 if (_file == null)
                 {
-                    Uri commandUri = UriHelper.AppendPath(_apiUri, "file");
+                    var commandUri = UriHelper.AppendPath(_apiUri, "file");
                     _file = new IpfsFile(commandUri, _httpClient, _jsonSerializer);
                 }
 
@@ -198,13 +183,14 @@ namespace Ipfs
         /// Log subcommands
         /// </summary>
         private IpfsLog _log;
+
         public IpfsLog Log
         {
             get
             {
                 if (_log == null)
                 {
-                    Uri commandUri = UriHelper.AppendPath(_apiUri, "log");
+                    var commandUri = UriHelper.AppendPath(_apiUri, "log");
                     _log = new IpfsLog(commandUri, _httpClient, _jsonSerializer);
                 }
 
@@ -216,13 +202,14 @@ namespace Ipfs
         /// Name subcommands
         /// </summary>
         private IpfsName _name;
+
         public IpfsName Name
         {
             get
             {
                 if (_name == null)
                 {
-                    Uri commandUri = UriHelper.AppendPath(_apiUri, "name");
+                    var commandUri = UriHelper.AppendPath(_apiUri, "name");
                     _name = new IpfsName(commandUri, _httpClient, _jsonSerializer);
                 }
 
@@ -234,13 +221,14 @@ namespace Ipfs
         /// Object subcommands
         /// </summary>
         private IpfsObject _object;
+
         public IpfsObject Object
         {
             get
             {
                 if (_object == null)
                 {
-                    Uri commandUri = UriHelper.AppendPath(_apiUri, "object");
+                    var commandUri = UriHelper.AppendPath(_apiUri, "object");
                     _object = new IpfsObject(commandUri, _httpClient, _jsonSerializer);
                 }
 
@@ -252,13 +240,14 @@ namespace Ipfs
         /// Pin subcommands
         /// </summary>
         private IpfsPin _pin;
+
         public IpfsPin Pin
         {
             get
             {
                 if (_pin == null)
                 {
-                    Uri commandUri = UriHelper.AppendPath(_apiUri, "pin");
+                    var commandUri = UriHelper.AppendPath(_apiUri, "pin");
                     _pin = new IpfsPin(commandUri, _httpClient, _jsonSerializer);
                 }
 
@@ -270,13 +259,14 @@ namespace Ipfs
         /// Refs subcommands
         /// </summary>
         private IpfsRefs _refs;
+
         public IpfsRefs Refs
         {
             get
             {
                 if (_refs == null)
                 {
-                    Uri commandUri = UriHelper.AppendPath(_apiUri, "refs");
+                    var commandUri = UriHelper.AppendPath(_apiUri, "refs");
                     _refs = new IpfsRefs(commandUri, _httpClient, _jsonSerializer);
                 }
 
@@ -288,13 +278,14 @@ namespace Ipfs
         /// Repo subcommands
         /// </summary>
         private IpfsRepo _repo;
+
         public IpfsRepo Repo
         {
             get
             {
                 if (_repo == null)
                 {
-                    Uri commandUri = UriHelper.AppendPath(_apiUri, "repo");
+                    var commandUri = UriHelper.AppendPath(_apiUri, "repo");
                     _repo = new IpfsRepo(commandUri, _httpClient, _jsonSerializer);
                 }
 
@@ -306,13 +297,14 @@ namespace Ipfs
         /// Query IPFS statistics
         /// </summary>
         private IpfsStats _stats;
+
         public IpfsStats Stats
         {
             get
             {
                 if (_stats == null)
                 {
-                    Uri commandUri = UriHelper.AppendPath(_apiUri, "stats");
+                    var commandUri = UriHelper.AppendPath(_apiUri, "stats");
                     _stats = new IpfsStats(commandUri, _httpClient, _jsonSerializer);
                 }
 
@@ -324,13 +316,14 @@ namespace Ipfs
         /// Swarm subcommands
         /// </summary>
         private IpfsSwarm _swarm;
+
         public IpfsSwarm Swarm
         {
             get
             {
                 if (_swarm == null)
                 {
-                    Uri commandUri = UriHelper.AppendPath(_apiUri, "swarm");
+                    var commandUri = UriHelper.AppendPath(_apiUri, "swarm");
                     _swarm = new IpfsSwarm(commandUri, _httpClient, _jsonSerializer);
                 }
 
@@ -342,13 +335,14 @@ namespace Ipfs
         /// utility functions for tar files in ipfs
         /// </summary>
         private IpfsTar _tar;
+
         public IpfsTar Tar
         {
             get
             {
                 if (_tar == null)
                 {
-                    Uri commandUri = UriHelper.AppendPath(_apiUri, "tar");
+                    var commandUri = UriHelper.AppendPath(_apiUri, "tar");
                     _tar = new IpfsTar(commandUri, _httpClient, _jsonSerializer);
                 }
 
@@ -360,13 +354,14 @@ namespace Ipfs
         /// Tour subcommands
         /// </summary>
         private IpfsTour _tour;
+
         public IpfsTour Tour
         {
             get
             {
                 if (_tour == null)
                 {
-                    Uri commandUri = UriHelper.AppendPath(_apiUri, "tour");
+                    var commandUri = UriHelper.AppendPath(_apiUri, "tour");
                     _tour = new IpfsTour(commandUri, _httpClient, _jsonSerializer);
                 }
 
@@ -397,15 +392,14 @@ namespace Ipfs
 
         /// <summary>
         /// Add an object to ipfs.
-        /// Adds contents of <path> to ipfs. Use -r to add directories.
+        /// Adds contents of <file /> to ipfs. Use -r to add directories.
         /// Note that directories are added recursively, to form the ipfs
         /// MerkleDAG.A smarter partial add with a staging area(like git)
         /// remains to be implemented
         /// </summary>
-        /// <param name="path">The path to a file to be added to IPFS</param>
+        /// <param name="file">The path to a file to be added to IPFS</param>
         /// <param name="recursive">Add directory paths recursively</param>
         /// <param name="quiet">Write minimal output</param>
-        /// <param name="progress">Stream progress data</param>
         /// <param name="wrapWithDirectory">Wrap files with a directory object</param>
         /// <param name="trickle">Use trickle-dag format for dag generation</param>
         /// <param name="cancellationToken">Token allowing you to cancel the request</param>
@@ -484,12 +478,11 @@ namespace Ipfs
         
         /// <summary>
         /// Show IPFS object data
-        /// Retrieves the object named by <ipfs-path> and outputs the data
+        /// Retrieves the object named by <ipfsPath /> and outputs the data
         /// it contains.
         /// </summary>
         /// <param name="ipfsPath">The path to the IPFS object(s) to be outputted</param>
         /// <param name="cancellationToken">A token that can be used to cancel the request</param>
-        /// <param name="cancellationToken">Token allowing you to cancel the request</param>
         /// <returns></returns>
         public async Task<Stream> Cat(string ipfsPath, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -525,9 +518,9 @@ namespace Ipfs
         /// <summary>
         /// Download IPFS objects
         ///
-        /// Retrieves the object named by <ipfs-path> and stores the data to disk.
+        /// Retrieves the object named by <ipfsPath /> and stores the data to disk.
         ///
-        /// By default, the output will be stored at./<ipfs-path>, but an alternate path
+        /// By default, the output will be stored at./<ipfsPath />, but an alternate path
         ///
         /// can be specified with '--output=<path>' or '-o=<path>'.
         ///
@@ -555,7 +548,7 @@ namespace Ipfs
         /// if no peer is specified, prints out local peers info.
         ///
         /// ipfs id supports the format option for output with the following keys:
-        /// <id> : the peers id
+        /// <peerId> : the peers id
         /// <aver>: agent version
         /// <pver>: protocol version
         /// <pubkey>: public key
@@ -670,15 +663,18 @@ namespace Ipfs
 
         #endregion Root command aliases
 
-        private bool _disposed = false;
+        private bool _disposed;
 
         protected virtual void Dispose(bool disposing)
         {
-            if (_disposed) return;
+            if (_disposed)
+            {
+                return;
+            }
 
             if (disposing)
             {
-                if (_httpClient != null) _httpClient.Dispose();
+                _httpClient?.Dispose();
             }
 
             _disposed = true;

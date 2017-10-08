@@ -1,6 +1,4 @@
-﻿using Ipfs.Json;
-using Ipfs.Utilities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -8,6 +6,8 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Ipfs.Json;
+using Ipfs.Utilities;
 
 namespace Ipfs
 {
@@ -15,13 +15,13 @@ namespace Ipfs
     {
         private readonly Uri _commandUri;
         private readonly HttpClient _httpClient;
-        protected readonly IJsonSerializer _jsonSerializer;
+        protected readonly IJsonSerializer JsonSerializer;
 
         protected IpfsCommand(Uri commandUri, HttpClient httpClient, IJsonSerializer jsonSerializer)
         {
             _commandUri = commandUri;
             _httpClient = httpClient;
-            _jsonSerializer = jsonSerializer;
+            JsonSerializer = jsonSerializer;
         }
 
         #region ExecuteGetAsync() Overrides
@@ -53,9 +53,9 @@ namespace Ipfs
 
         protected async Task<HttpContent> ExecuteGetAsync(string methodName, IEnumerable<string> args, IDictionary<string, string> flags, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Uri commandUri = GetSubCommandUri(methodName, args, flags);
+            var commandUri = GetSubCommandUri(methodName, args, flags);
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, commandUri);
+            var request = new HttpRequestMessage(HttpMethod.Get, commandUri);
 
             return await ExecuteAsync(request, cancellationToken);
         }
@@ -69,11 +69,11 @@ namespace Ipfs
 
         protected async Task<HttpContent> ExecutePostAsync(string methodName, IEnumerable<string> args, IDictionary<string, string> flags, HttpContent content, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Uri commandUri = GetSubCommandUri(methodName, args, flags);
+            var commandUri = GetSubCommandUri(methodName, args, flags);
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, commandUri)
+            var request = new HttpRequestMessage(HttpMethod.Post, commandUri)
             {
-                Content = content,
+                Content = content
             };
 
             return await ExecuteAsync(request, cancellationToken);
@@ -81,9 +81,9 @@ namespace Ipfs
 
         private async Task<HttpContent> ExecuteAsync(HttpRequestMessage request, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Debug.WriteLine(String.Format("IpfsCommand.ExecuteAsync: {0} {1}", request.Method.ToString(), request.RequestUri.ToString()));
+            Debug.WriteLine($"IpfsCommand.ExecuteAsync: {request.Method} {request.RequestUri}");
 
-            HttpResponseMessage response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead,  cancellationToken);
+            var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead,  cancellationToken);
             response.EnsureSuccessStatusCode();
 
             return response.Content;
@@ -96,9 +96,9 @@ namespace Ipfs
 
         protected async Task<Stream> ExecuteGetStreamAsync(string methodName, IEnumerable<string> args, IDictionary<string, string> flags, CancellationToken cancellationToken = default(CancellationToken))
         {
-            Uri commandUri = GetSubCommandUri(methodName, args, flags);
+            var commandUri = GetSubCommandUri(methodName, args, flags);
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, commandUri);
+            var request = new HttpRequestMessage(HttpMethod.Get, commandUri);
 
             return await ExecuteGetStreamAsync(request, cancellationToken);
         }
@@ -110,14 +110,14 @@ namespace Ipfs
 
         private Uri GetSubCommandUri(string methodName, IEnumerable<string> args, IDictionary<string, string> flags)
         {
-            Uri commandUri = new Uri(_commandUri.ToString());
+            var commandUri = new Uri(_commandUri.ToString());
 
-            if (!String.IsNullOrEmpty(methodName))
+            if (!string.IsNullOrEmpty(methodName))
             {
                 commandUri = UriHelper.AppendPath(commandUri, methodName);
             }
 
-            if (args != null && args.Count() > 0)
+            if (args != null && args.Any())
             {
                 commandUri = UriHelper.AppendQuery(commandUri, args.Select(x=> new Tuple<string,string>("arg", x)));
             }
@@ -138,10 +138,7 @@ namespace Ipfs
         /// <returns>Enumerable containing values</returns>
         protected static IEnumerable<T> ToEnumerable<T>(params T[] values)
         {
-            foreach (var value in values)
-            {
-                yield return value;
-            }
+            return values;
         }
     }
 }

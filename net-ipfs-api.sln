@@ -1,0 +1,35 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.16
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{5B74B194-432C-4581-B683-22FB89C46AD3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ipfs", "src\Ipfs\Ipfs.csproj", "{E1202B52-552F-4100-B273-9627D193CDFD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ipfs.Test", "test\Ipfs.Test\Ipfs.Test.csproj", "{DC275309-716F-49F0-9CB5-AE99A357FCEF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E1202B52-552F-4100-B273-9627D193CDFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1202B52-552F-4100-B273-9627D193CDFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1202B52-552F-4100-B273-9627D193CDFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1202B52-552F-4100-B273-9627D193CDFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC275309-716F-49F0-9CB5-AE99A357FCEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC275309-716F-49F0-9CB5-AE99A357FCEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC275309-716F-49F0-9CB5-AE99A357FCEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DC275309-716F-49F0-9CB5-AE99A357FCEF} = {5B74B194-432C-4581-B683-22FB89C46AD3}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {14862EE9-CE91-4B55-ADE9-3AE48E9437C2}
+	EndGlobalSection
+EndGlobal
