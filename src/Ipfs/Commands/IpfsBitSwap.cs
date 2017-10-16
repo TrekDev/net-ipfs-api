@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net.Http;
-using System.Threading.Tasks;
 using System.Linq;
-using Ipfs.Json;
+using System.Net.Http;
 using System.Threading;
+using System.Threading.Tasks;
+using Ipfs.Json;
 
 namespace Ipfs.Commands
 {
@@ -31,7 +31,7 @@ namespace Ipfs.Commands
             {
                 ProvideBufLen = stat.ProvideBufLen,
                 Wantlist = stat.Wantlist,
-                Peers = stat.Peers == null ? null : stat.Peers.Select(x => new MultiHash(x)).ToList(),
+                Peers = stat.Peers?.Select(x => new MultiHash(x)).ToList(),
                 BlocksReceived = stat.BlocksReceived,
                 DupBlksReceived = stat.DupBlksReceived,
                 DupDataReceived = stat.DupDataReceived,

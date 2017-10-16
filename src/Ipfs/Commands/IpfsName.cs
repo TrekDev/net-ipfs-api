@@ -1,8 +1,8 @@
-﻿using Ipfs.Json;
-using System;
+﻿using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Ipfs.Json;
 
 namespace Ipfs.Commands
 {
@@ -45,7 +45,7 @@ namespace Ipfs.Commands
         {
             HttpContent content = await ExecuteGetAsync("resolve", name, cancellationToken);
             string json = await content.ReadAsStringAsync();
-            Json.IpfsNameResolve resolve = _jsonSerializer.Deserialize<Json.IpfsNameResolve>(json);
+            IpfsNameResolve resolve = _jsonSerializer.Deserialize<IpfsNameResolve>(json);
             return resolve.Path;
         }
     }

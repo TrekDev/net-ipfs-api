@@ -1,109 +1,37 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{2DB66324-145D-4703-BD69-5E231609AFF8}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Ipfs</RootNamespace>
-    <AssemblyName>Ipfs</AssemblyName>
-    <DefaultLanguage>en-US</DefaultLanguage>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <TargetFrameworkProfile>Profile111</TargetFrameworkProfile>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworks>netstandard1.4;net45;net45</TargetFrameworks>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+  
+  <PropertyGroup>
+    <TargetFramework>netstandard1.4</TargetFramework>
+    <PackageId>net-ipfs-api</PackageId>
+    <Version>0.4.10.3</Version>
+    <Authors>TrekDev, Timothy Parez</Authors>
+    <Description>Client library for the IPFS HTTP API</Description>
+    <PackageLicenseUrl>https://github.com/TrekDev/net-ipfs-api/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/TrekDev/net-ipfs-api</PackageProjectUrl>
+    <Company />
+    <Product />
+    <PackageTags>IPFS HTTP CLIENT LIBRARY</PackageTags>
+    <PackageReleaseNotes>Fixed an issue causing exceptions
+
+when the bw stats values were too large.
+
+
+
+Target Platforms:
+
+- .NET Framework 4.5
+
+- .NET Standard 1.4</PackageReleaseNotes>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Compile Include="Base58.cs" />
-    <Compile Include="Commands\IpfsBitSwap.cs" />
-    <Compile Include="Commands\IpfsBootstrap.cs" />
-    <Compile Include="Commands\IpfsConfig.cs" />
-    <Compile Include="Commands\IpfsDht.cs" />
-    <Compile Include="Commands\IpfsDiag.cs" />
-    <Compile Include="Commands\IpfsFile.cs" />
-    <Compile Include="Commands\IpfsLog.cs" />
-    <Compile Include="Commands\IpfsName.cs" />
-    <Compile Include="Commands\IpfsPin.cs" />
-    <Compile Include="Commands\IpfsRefs.cs" />
-    <Compile Include="Commands\IpfsRepo.cs" />
-    <Compile Include="Commands\IpfsRoot.cs" />
-    <Compile Include="Commands\IpfsStats.cs" />
-    <Compile Include="Commands\IpfsSwarm.cs" />
-    <Compile Include="Commands\IpfsTar.cs" />
-    <Compile Include="Commands\IpfsTour.cs" />
-    <Compile Include="Json\IJsonSerializer.cs" />
-    <Compile Include="IpfsBitSwapStat.cs" />
-    <Compile Include="IpfsEncoding.cs" />
-    <Compile Include="IpfsCommand.cs" />
-    <Compile Include="Commands\IpfsBlock.cs" />
-    <Compile Include="IpfsClient.cs" />
-    <Compile Include="IpfsException.cs" />
-    <Compile Include="Commands\IpfsObject.cs" />
-    <Compile Include="IpfsID.cs" />
-    <Compile Include="IpfsLogLevel.cs" />
-    <Compile Include="IpfsNamePublish.cs" />
-    <Compile Include="IpfsObjectLinks.cs" />
-    <Compile Include="IpfsObjectStat.cs" />
-    <Compile Include="IpfsPeer.cs" />
-    <Compile Include="IpfsPeerConnectionStatus.cs" />
-    <Compile Include="IpfsPingResult.cs" />
-    <Compile Include="IpfsType.cs" />
-    <Compile Include="IpfsVis.cs" />
-    <Compile Include="Json\JsonSerializer.cs" />
-    <Compile Include="Json\IpfsAdd.cs" />
-    <Compile Include="Json\IpfsBitSwapStat.cs" />
-    <Compile Include="Json\IpfsCommand.cs" />
-    <Compile Include="Json\IpfsConfigShow.cs" />
-    <Compile Include="Json\IpfsID.cs" />
-    <Compile Include="Json\IpfsNamePublish.cs" />
-    <Compile Include="Json\IpfsNameResolve.cs" />
-    <Compile Include="Json\IpfsObjectLinks.cs" />
-    <Compile Include="Json\IpfsObjectStat.cs" />
-    <Compile Include="Json\IpfsStatsBw.cs" />
-    <Compile Include="Json\IpfsVersion.cs" />
-    <Compile Include="Json\MerkleNodeConverter.cs" />
-    <Compile Include="Json\MultiHashConverter.cs" />
-    <Compile Include="MerkleNode.cs" />
-    <Compile Include="MultiAddress.cs" />
-    <Compile Include="MultiHash.cs" />
-    <Compile Include="IpfsStream.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utilities\UriHelper.cs" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.4.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+    <PackageReference Include="System.Net.Http" Version="4.3.3" />
   </ItemGroup>
-  <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\portable-net45+win8+wp8+wpa81\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>

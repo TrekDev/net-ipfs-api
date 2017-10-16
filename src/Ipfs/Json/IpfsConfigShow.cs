@@ -2,7 +2,6 @@
 
 namespace Ipfs.Json
 {
-
     public class Identity
     {
         public string PeerID { get; set; }
@@ -102,5 +101,4 @@ namespace Ipfs.Json
         public API API { get; set; }
         public Swarm Swarm { get; set; }
     }
-
 }

@@ -6,9 +6,7 @@ namespace Ipfs
     public class MerkleNode : IEquatable<MerkleNode>
     {
         public MerkleNode(string multiHash) : this(new MultiHash(multiHash))
-        {
-
-        }
+        { }
 
         public MerkleNode(MultiHash multiHash)
         {
@@ -44,11 +42,15 @@ namespace Ipfs
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(this, obj)) return true;
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
 
-            var other = obj as MerkleNode;
-
-            if(other == null) return false;
+            if(!(obj is MerkleNode other))
+            {
+                return false;
+            }
 
             return Equals(other);
         }

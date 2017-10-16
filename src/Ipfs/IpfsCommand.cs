@@ -1,6 +1,4 @@
-﻿using Ipfs.Json;
-using Ipfs.Utilities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -8,6 +6,8 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Ipfs.Json;
+using Ipfs.Utilities;
 
 namespace Ipfs
 {
@@ -117,7 +117,7 @@ namespace Ipfs
                 commandUri = UriHelper.AppendPath(commandUri, methodName);
             }
 
-            if (args != null && args.Count() > 0)
+            if (args != null && args.Any())
             {
                 commandUri = UriHelper.AppendQuery(commandUri, args.Select(x=> new Tuple<string,string>("arg", x)));
             }
@@ -138,10 +138,7 @@ namespace Ipfs
         /// <returns>Enumerable containing values</returns>
         protected static IEnumerable<T> ToEnumerable<T>(params T[] values)
         {
-            foreach (var value in values)
-            {
-                yield return value;
-            }
+            return values;
         }
     }
 }

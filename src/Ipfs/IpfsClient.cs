@@ -1,37 +1,25 @@
-﻿using Ipfs.Commands;
-using Ipfs.Json;
-using Ipfs.Utilities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Ipfs.Commands;
+using Ipfs.Json;
+using Ipfs.Utilities;
 
 namespace Ipfs
 {
     public class IpfsClient : IDisposable
     {
-        private static Uri DefaultUri
-        {
-            get { return new Uri("http://127.0.0.1:5001"); }
-        }
+        private static Uri DefaultUri => new Uri("http://127.0.0.1:5001");
 
-        private static HttpClient DefaultHttpClient
-        {
-            get { return new HttpClient(); }
-        }
+        private static HttpClient DefaultHttpClient => new HttpClient();
 
-        private static string DefaultApiPath
-        {
-            get { return "api/v0"; }
-        }
+        private static string DefaultApiPath => "api/v0";
 
-        private static IJsonSerializer DefaultJsonSerializer
-        {
-            get { return new JsonSerializer(); }
-        }
+        private static IJsonSerializer DefaultJsonSerializer => new JsonSerializer();
 
         private readonly Uri _apiUri;
         private readonly HttpClient _httpClient;
@@ -55,18 +43,7 @@ namespace Ipfs
         /// Also availible at the client level with aliases defined below
         /// </summary>
         private IpfsRoot _root;
-        public IpfsRoot Root
-        {
-            get
-            {
-                if (_root == null)
-                {
-                    _root = new IpfsRoot(_apiUri, _httpClient, _jsonSerializer);
-                }
-
-                return _root;
-            }
-        }
+        public IpfsRoot Root => _root ?? (_root = new IpfsRoot(_apiUri, _httpClient, _jsonSerializer));
 
         /// <summary>
         /// A set of commands to manipulate the bitswap agent
@@ -674,11 +651,14 @@ namespace Ipfs
 
         protected virtual void Dispose(bool disposing)
         {
-            if (_disposed) return;
+            if (_disposed)
+            {
+                return;
+            }
 
             if (disposing)
             {
-                if (_httpClient != null) _httpClient.Dispose();
+                _httpClient?.Dispose();
             }
 
             _disposed = true;
