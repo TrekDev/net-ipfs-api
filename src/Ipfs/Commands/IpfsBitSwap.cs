@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
+using System.Linq;
 using Ipfs.Json;
+using System.Threading;
 
 namespace Ipfs.Commands
 {
@@ -21,20 +21,20 @@ namespace Ipfs.Commands
         /// <returns>IpfsBitSwapStat object</returns>
         public async Task<IpfsBitSwapStat> Stat(CancellationToken cancellationToken = default(CancellationToken))
         {
-            var content = await ExecuteGetAsync("stat", cancellationToken);
+            HttpContent content = await ExecuteGetAsync("stat", cancellationToken);
 
             string json = await content.ReadAsStringAsync();
 
-            var stat = JsonSerializer.Deserialize<Json.IpfsBitSwapStat>(json);
+            Json.IpfsBitSwapStat stat = _jsonSerializer.Deserialize<Json.IpfsBitSwapStat>(json);
 
             return new IpfsBitSwapStat
             {
                 ProvideBufLen = stat.ProvideBufLen,
                 Wantlist = stat.Wantlist,
-                Peers = stat.Peers?.Select(x => new MultiHash(x)).ToList(),
+                Peers = stat.Peers == null ? null : stat.Peers.Select(x => new MultiHash(x)).ToList(),
                 BlocksReceived = stat.BlocksReceived,
                 DupBlksReceived = stat.DupBlksReceived,
-                DupDataReceived = stat.DupDataReceived
+                DupDataReceived = stat.DupDataReceived,
             };
         }
 
@@ -61,7 +61,7 @@ namespace Ipfs.Commands
         {
             var flags = new Dictionary<string, string>();
 
-            if(!string.IsNullOrEmpty(peer))
+            if(!String.IsNullOrEmpty(peer))
             {
                 flags.Add("peer", peer);
             }

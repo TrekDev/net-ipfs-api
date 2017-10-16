@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
 using Ipfs.Json;
+using System.Threading;
 
 namespace Ipfs.Commands
 {
@@ -22,13 +22,13 @@ namespace Ipfs.Commands
         /// <returns>Returns an enumerable of multihashes, or an empty enumerable if nothing is found.</returns>
         public async Task<IEnumerable<MultiHash>> Local(CancellationToken cancellationToken = default(CancellationToken))
         {
-            var content = await ExecuteGetAsync("local", cancellationToken);
+            HttpContent content = await ExecuteGetAsync("local", cancellationToken);
 
             //DOESN'T return json!
             //Returns a list of multihashes separated by "\n"
-            string stringContent = await content.ReadAsStringAsync();
+            var stringContent = await content.ReadAsStringAsync();
 
-            if(string.IsNullOrEmpty(stringContent))
+            if(String.IsNullOrEmpty(stringContent))
             {
                 return Enumerable.Empty<MultiHash>();
             }

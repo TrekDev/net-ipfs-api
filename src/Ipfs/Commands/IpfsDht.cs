@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
 using Ipfs.Json;
+using System.Threading;
 
 namespace Ipfs.Commands
 {
@@ -16,12 +16,12 @@ namespace Ipfs.Commands
         /// <summary>
         /// Run a 'FindPeer' query through the DHT
         /// </summary>
-        /// <param name="peerId">The peer to search for</param>
+        /// <param name="peerID">The peer to search for</param>
         /// <param name="cancellationToken">Token allowing you to cancel the request</param>
         /// <returns></returns>
-        public async Task<HttpContent> FindPeer(string peerId, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpContent> FindPeer(string peerID, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await ExecuteGetAsync("findpeer", peerId, cancellationToken);
+            return await ExecuteGetAsync("findpeer", peerID, cancellationToken);
         }
 
         /// <summary>
@@ -47,11 +47,11 @@ namespace Ipfs.Commands
         /// <summary>
         /// Run a 'findClosestPeers' query through the DHT
         /// </summary>
-        /// <param name="peerId">The peerID to run the query against</param>
+        /// <param name="peerID">The peerID to run the query against</param>
         /// <param name="verbose">Write extra information</param>
         /// <param name="cancellationToken">Token allowing you to cancel the request</param>
         /// <returns></returns>
-        public async Task<HttpContent> Query(string peerId, bool verbose = false, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpContent> Query(string peerID, bool verbose = false, CancellationToken cancellationToken = default(CancellationToken))
         {
             var flags = new Dictionary<string, string>();
 
@@ -60,7 +60,7 @@ namespace Ipfs.Commands
                 flags.Add("verbose", "true");
             }
 
-            return await ExecuteGetAsync("findprovs", peerId, flags, cancellationToken);
+            return await ExecuteGetAsync("findprovs", peerID, flags, cancellationToken);
         }
     }
 }

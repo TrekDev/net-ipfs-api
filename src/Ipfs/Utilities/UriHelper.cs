@@ -8,7 +8,7 @@ namespace Ipfs.Utilities
     {
         public static Uri AppendPath(Uri baseUri, string path)
         {
-            if(string.IsNullOrEmpty(path))
+            if(String.IsNullOrEmpty(path))
             {
                 return baseUri;
             }
@@ -25,23 +25,20 @@ namespace Ipfs.Utilities
 
         public static Uri AppendQuery(Uri baseUri, IEnumerable<Tuple<string,string>> args)
         {
-            if (args == null || !args.Any())
-            {
-                return baseUri;
-            }
+            if (args == null || args.Count() <= 0) { return baseUri; }
 
             var uriBuilder = new UriBuilder(baseUri);
 
             string query = uriBuilder.Query.TrimStart('?');
 
-            if(!string.IsNullOrEmpty(query))
+            if(!String.IsNullOrEmpty(query))
             {
                 query += "&";
             }
 
-            query += string.Join("&", args
-                .Where(x=>!string.IsNullOrEmpty(x.Item1) && !string.IsNullOrEmpty(x.Item2))
-                .Select(x => string.Format("{0}={1}", x.Item1, x.Item2)));
+            query += String.Join("&", args
+                .Where(x=>!String.IsNullOrEmpty(x.Item1) && !String.IsNullOrEmpty(x.Item2))
+                .Select(x => String.Format("{0}={1}", x.Item1, x.Item2)));
 
             uriBuilder.Query = query;
 

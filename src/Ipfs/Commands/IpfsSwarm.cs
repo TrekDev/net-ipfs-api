@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Ipfs.Json;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Ipfs.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Ipfs.Commands
 {
@@ -24,16 +25,16 @@ namespace Ipfs.Commands
         /// <returns>all addresses this node is aware of</returns>
         public async Task<IEnumerable<IpfsPeer>> Addrs(CancellationToken cancellationToken = default(CancellationToken))
         {
-            var content = await ExecuteGetAsync("addrs", cancellationToken);
+            HttpContent content = await ExecuteGetAsync("addrs", cancellationToken);
 
             string json = await content.ReadAsStringAsync();
 
-            if(string.IsNullOrEmpty(json))
+            if(String.IsNullOrEmpty(json))
             {
                 return Enumerable.Empty<IpfsPeer>();
             }
 
-            var jsonDict = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, List<string>>>>(json);
+            var jsonDict = _jsonSerializer.Deserialize<Dictionary<string, Dictionary<string, List<string>>>>(json);
 
             return jsonDict["Addrs"].Select(x => new IpfsPeer(new MultiHash(x.Key), x.Value.Select(y => new MultiAddress(y))));
         }
@@ -117,18 +118,18 @@ namespace Ipfs.Commands
         /// <returns>'disconnect <address> successs' on success</returns>
         public async Task<ICollection<IpfsPeerConnectionStatus>> Disconnect(IEnumerable<string> multiAddresses, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var content = await ExecuteGetAsync("disconnect", multiAddresses, null, cancellationToken);
+            HttpContent content = await ExecuteGetAsync("disconnect", multiAddresses, null, cancellationToken);
 
             string json = await content.ReadAsStringAsync();
 
-            var peerConnectionStatuses = JsonSerializer.Deserialize<IDictionary<string, IList<string>>>(json);
+            var peerConnectionStatuses = _jsonSerializer.Deserialize<IDictionary<string, IList<string>>>(json);
 
             return peerConnectionStatuses
                 .SelectMany(x => x.Value)
                 .Select(x =>
                 {
                     string[] components = x.Split(' ');
-                    return new IpfsPeerConnectionStatus(components[0], new MultiHash(components[1]), string.Equals("SUCCESS", components[2].ToUpperInvariant()));
+                    return new IpfsPeerConnectionStatus(components[0], new MultiHash(components[1]), String.Equals("SUCCESS", components[2].ToUpperInvariant()));
                 })
                .ToArray();
         }
@@ -141,7 +142,7 @@ namespace Ipfs.Commands
         /// <returns></returns>
         public async Task<ICollection<MultiAddress>> Peers(CancellationToken cancellationToken = default(CancellationToken))
         {
-            var content = await ExecuteGetAsync("peers", cancellationToken);
+            HttpContent content = await ExecuteGetAsync("peers", cancellationToken);
             string json = await content.ReadAsStringAsync();
                        
             dynamic results = JObject.Parse(json);

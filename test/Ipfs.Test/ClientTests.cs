@@ -1,45 +1,42 @@
-﻿using System;
+﻿using Ipfs.Test.Mocks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
-using Ipfs.Test.Mocks;
-using Xunit;
 
 namespace Ipfs.Test
 {
+    [TestClass]
     public class ClientTests
     {
-        [Fact]
+        [TestMethod]
+        [ExpectedException(typeof(ObjectDisposedException))]
         public void ClientShouldThrowIfMethodCalledAfterBeingDisposed()
         {
-            Assert.Throws<ObjectDisposedException>(() =>
+            var mockResponse = new HttpResponseMessage(HttpStatusCode.OK);
+            mockResponse.Content = new StringContent(String.Empty);
+
+            var mockHttpMessageHandler = new MockHttpMessageHandler(mockResponse);
+            string mockAddress = "http://127.0.0.1:5001";
+            var client = new IpfsClient(new Uri(mockAddress), new HttpClient(mockHttpMessageHandler));
+
+            client.Dispose();
+
+            try
             {
-                var mockResponse = new HttpResponseMessage(HttpStatusCode.OK)
-                {
-                    Content = new StringContent(string.Empty)
-                };
-
-                var mockHttpMessageHandler = new MockHttpMessageHandler(mockResponse);
-                const string MOCK_ADDRESS = "http://127.0.0.1:5001";
-                var client = new IpfsClient(new Uri(MOCK_ADDRESS), new HttpClient(mockHttpMessageHandler));
-
-                client.Dispose();
-
-                try
-                {
-                    client.Commands().Wait();
-                }
-                catch (AggregateException ex)
-                {
-                    throw ex.InnerException;
-                }
-            });
+                client.Commands().Wait();
+            }
+            catch (AggregateException ex)
+            {
+                throw ex.InnerException;
+            }
         }
 
-        [Fact]
+        [TestMethod]
         public async Task ClientShouldBeAbleToDownloadLargeFiles()
         {
            /* This test is a bit long because it relies of having 
@@ -71,8 +68,12 @@ namespace Ipfs.Test
 
                     await client.Pin.Rm(sourceHash);
 
-                    Assert.True(FileHashesAreEqual(sourceFile, targetFile));
+                    Assert.IsTrue(FileHashesAreEqual(sourceFile, targetFile));
                 }
+            }
+            catch
+            {
+                throw;
             }
             finally
             {
@@ -108,7 +109,7 @@ namespace Ipfs.Test
 
         private static bool FileHashesAreEqual(string leftFile, string rightFile)
         {
-            using (var sha = SHA256.Create())
+            using (var sha = new SHA256CryptoServiceProvider())
             {
                 using (var leftStream = File.OpenRead(leftFile))
                 using (var rightStream = File.OpenRead(rightFile))

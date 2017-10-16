@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
 using Ipfs.Json;
+using System.Threading;
 
 namespace Ipfs.Commands
 {
@@ -70,12 +70,14 @@ namespace Ipfs.Commands
                     case IpfsVis.Dot:
                         visValue = "dot";
                         break;
+                    default:
+                        break;
                 }
 
                 flags.Add("vis", visValue);
             }
 
-            var content = await ExecuteGetAsync("net", flags, cancellationToken);
+            HttpContent content = await ExecuteGetAsync("net", flags, cancellationToken);
 
             return await content.ReadAsByteArrayAsync();
         }

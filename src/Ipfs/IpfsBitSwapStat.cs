@@ -29,15 +29,11 @@ namespace Ipfs
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(obj, this))
-            {
-                return true;
-            }
+            if (ReferenceEquals(obj, this)) return true;
 
-            if (!(obj is IpfsBitSwapStat other))
-            {
-                return false;
-            }
+            var other = obj as IpfsBitSwapStat;
+
+            if (other == null) return false;
 
             return Equals(other);
         }

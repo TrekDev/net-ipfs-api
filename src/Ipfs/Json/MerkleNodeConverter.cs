@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
 
 namespace Ipfs.Json
 {
@@ -24,27 +24,27 @@ namespace Ipfs.Json
                 {
                     string propertyName = reader.Value.ToString();
 
-                    if (string.Equals(propertyName, "Data"))
+                    if (String.Equals(propertyName, "Data"))
                     {
                         reader.Read();
                         merkleNode.Data = serializer.Deserialize<byte[]>(reader);
                     }
-                    else if (string.Equals(propertyName, "Hash"))
+                    else if (String.Equals(propertyName, "Hash"))
                     {
                         reader.Read();
                         merkleNode.Hash = serializer.Deserialize<MultiHash>(reader);
                     }
-                    else if (string.Equals(propertyName, "Links"))
+                    else if (String.Equals(propertyName, "Links"))
                     {
                         reader.Read();
                         merkleNode.Links = serializer.Deserialize<IEnumerable<MerkleNode>>(reader);
                     }
-                    else if (string.Equals(propertyName, "Name"))
+                    else if (String.Equals(propertyName, "Name"))
                     {
                         reader.Read();
                         merkleNode.Name = serializer.Deserialize<string>(reader);
                     }
-                    else if (string.Equals(propertyName, "Size"))
+                    else if (String.Equals(propertyName, "Size"))
                     {
                         reader.Read();
                         merkleNode.Size = serializer.Deserialize<long?>(reader);
@@ -63,24 +63,24 @@ namespace Ipfs.Json
                 return;
             }
 
-            var mn = value as MerkleNode;
+            MerkleNode mn = value as MerkleNode;
 
             writer.WriteStartObject();
 
             writer.WritePropertyName("Data");
-            serializer.Serialize(writer, mn?.Data);
+            serializer.Serialize(writer, mn.Data);
 
             writer.WritePropertyName("Hash");
-            serializer.Serialize(writer, mn?.Hash);
+            serializer.Serialize(writer, mn.Hash);
 
             writer.WritePropertyName("Links");
-            serializer.Serialize(writer, mn?.Links);
+            serializer.Serialize(writer, mn.Links);
 
             writer.WritePropertyName("Name");
-            serializer.Serialize(writer, mn?.Name);
+            serializer.Serialize(writer, mn.Name);
 
             writer.WritePropertyName("Size");
-            serializer.Serialize(writer, mn?.Size);
+            serializer.Serialize(writer, mn.Size);
 
             writer.WriteEndObject();
         }

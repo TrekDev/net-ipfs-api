@@ -1,34 +1,34 @@
-﻿using System.Text;
-using Ipfs.Json;
-using Xunit;
+﻿using Ipfs.Json;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Text;
 
 namespace Ipfs.Test
 {
+    [TestClass]
     public class JsonSerializerTests
     {
-        readonly IJsonSerializer _jsonSerializer;
-
+        IJsonSerializer _jsonSerializer;
         public JsonSerializerTests()
         {
             _jsonSerializer = new JsonSerializer();
         }
 
-        [Fact]
+        [TestMethod]
         public void ShouldSerializeMerkleNodeCorrectly()
         {
-            var merkleNode = new MerkleNode
+            MerkleNode merkleNode = new MerkleNode
             {
                 Size = 8,
                 Name = "My Merkle Node",
                 Hash = new MultiHash("QmT78zSuBmuS4z925WZfrqQ1qHaJ56DQaTfyMUF7F8ff5o"),
                 Data= Encoding.UTF8.GetBytes("My string"),
-                Links = null
+                Links = null,
             };
 
             string actual = _jsonSerializer.Serialize(merkleNode);
-            const string EXPECTED = "{\"Data\":\"TXkgc3RyaW5n\",\"Hash\":\"QmT78zSuBmuS4z925WZfrqQ1qHaJ56DQaTfyMUF7F8ff5o\",\"Links\":null,\"Name\":\"My Merkle Node\",\"Size\":8}";
+            string expected = "{\"Data\":\"TXkgc3RyaW5n\",\"Hash\":\"QmT78zSuBmuS4z925WZfrqQ1qHaJ56DQaTfyMUF7F8ff5o\",\"Links\":null,\"Name\":\"My Merkle Node\",\"Size\":8}";
 
-            Assert.True(Equals(actual, EXPECTED));
+            Assert.IsTrue(Equals(actual, expected));
         }
     }
 }

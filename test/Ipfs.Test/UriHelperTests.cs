@@ -1,31 +1,33 @@
-﻿using System;
-using Ipfs.Utilities;
-using Xunit;
+﻿using Ipfs.Utilities;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Collections.Generic;
 
 namespace Ipfs.Test
 {
+    [TestClass]
     public class UriHelperTests
     {
-        [Fact]
+        [TestMethod]
         public void ShouldAppendPathsCorrectly()
         {
-            var baseUri = new Uri("http://127.0.0.1:5001");
+            Uri baseUri = new Uri("http://127.0.0.1:5001");
 
             string firstPath = "/api/v0/";
-            const string FIRST_EXPECTED_PATH = "http://127.0.0.1:5001/api/v0";
-            var firstUri = UriHelper.AppendPath(baseUri, firstPath);
+            string firstExpectedPath = "http://127.0.0.1:5001/api/v0";
+            Uri firstUri = UriHelper.AppendPath(baseUri, firstPath);
 
-            Assert.True(Equals(firstUri, FIRST_EXPECTED_PATH));
+            Assert.IsTrue(Equals(firstUri, firstExpectedPath));
 
-            const string SECOND_PATH = "/methodName";
+            string secondPath = "/methodName";
             string secondExpectedPath = "http://127.0.0.1:5001/api/v0/methodName";
 
-            var secondUri = UriHelper.AppendPath(firstUri, SECOND_PATH);
+            Uri secondUri = UriHelper.AppendPath(firstUri, secondPath);
 
-            Assert.True(Equals(secondUri, secondExpectedPath));
+            Assert.IsTrue(Equals(secondUri, secondExpectedPath));
         }
 
-        //[Fact]
+        //[TestMethod]
         //public void ShouldAppendQueryCorrectly()
         //{
         //    Uri baseUri = new Uri("http://127.0.0.1:5001/api/v0/methodName");
@@ -36,7 +38,7 @@ namespace Ipfs.Test
 
         //    string expectedUri = "http://127.0.0.1:5001/api/v0/methodName?arg=myArg";
         //    Uri actualUri = UriHelper.AppendQuery(baseUri, query);
-        //    Assert.True(Equals(expectedUri, actualUri));
+        //    Assert.IsTrue(Equals(expectedUri, actualUri));
         //}
     }
 }

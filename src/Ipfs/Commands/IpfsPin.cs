@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
 using Ipfs.Json;
+using System.Threading;
 
 namespace Ipfs.Commands
 {
@@ -32,16 +32,16 @@ namespace Ipfs.Commands
                 flags.Add("recursive", "true");
             }
 
-            var content = await ExecuteGetAsync("add", ipfsPath, flags, cancellationToken);
+            HttpContent content = await ExecuteGetAsync("add", ipfsPath, flags, cancellationToken);
 
             string json = await content.ReadAsStringAsync();
 
-            if(string.IsNullOrEmpty(json))
+            if(String.IsNullOrEmpty(json))
             {
                 return Enumerable.Empty<MultiHash>();
             }
 
-            var jsonDict = JsonSerializer.Deserialize<Dictionary<string, List<string>>>(json);
+            var jsonDict = _jsonSerializer.Deserialize<Dictionary<string, List<string>>>(json);
 
             return jsonDict["Pinned"].Select(x => new MultiHash(x));
         }
@@ -75,6 +75,8 @@ namespace Ipfs.Commands
                         break;
                     case IpfsType.All:
                         typeValue = "all";
+                        break;
+                    default:
                         break;
                 }
 

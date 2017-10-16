@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Ipfs.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Ipfs.Json;
 
 namespace Ipfs.Commands
 {
@@ -48,18 +48,20 @@ namespace Ipfs.Commands
                 case IpfsLogLevel.Critical:
                     levelValue = "critical";
                     break;
+                default:
+                    break;
             }
 
-            var content = await ExecuteGetAsync("level", new[] { subsystem, levelValue }, cancellationToken);
+            HttpContent content = await ExecuteGetAsync("level", new[] { subsystem, levelValue }, cancellationToken);
 
             string json = await content.ReadAsStringAsync();
 
-            if(string.IsNullOrEmpty(json))
+            if(String.IsNullOrEmpty(json))
             {
-                return string.Empty;
+                return String.Empty;
             }
 
-            var jsonDict = JsonSerializer.Deserialize<Dictionary<string, string>>(json);
+            var jsonDict = _jsonSerializer.Deserialize<Dictionary<string, string>>(json);
 
             return jsonDict["Message"];
         }
@@ -72,7 +74,7 @@ namespace Ipfs.Commands
         /// <returns>A stream to the log tail output</returns>
         public async Task<Stream> Tail(CancellationToken cancellationToken = default(CancellationToken))
         {
-            var content = await ExecuteGetAsync("tail", cancellationToken);
+            HttpContent content = await ExecuteGetAsync("tail", cancellationToken);
 
             return await content.ReadAsStreamAsync();
         }

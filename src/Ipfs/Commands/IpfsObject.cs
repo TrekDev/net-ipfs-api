@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Ipfs.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
-using Ipfs.Json;
 
 namespace Ipfs.Commands
 {
@@ -42,10 +42,9 @@ namespace Ipfs.Commands
         /// <returns></returns>
         public async Task<HttpContent> Get(string key, IpfsEncoding encoding, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var flags = new Dictionary<string, string>
-            {
-                {"encoding", GetIpfsEncodingValue(encoding)}
-            };
+            var flags = new Dictionary<string, string>();
+
+            flags.Add("encoding", GetIpfsEncodingValue(encoding));
 
             return await ExecuteGetAsync("get", key, flags, cancellationToken);
         }
@@ -61,21 +60,22 @@ namespace Ipfs.Commands
         /// <returns></returns>
         public async Task<IpfsObjectLinks> Links(string key, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var content = await ExecuteGetAsync("links", key, cancellationToken);
+            HttpContent content = await ExecuteGetAsync("links", key, cancellationToken);
 
             string json = await content.ReadAsStringAsync();
 
-            var links = JsonSerializer.Deserialize<Json.IpfsObjectLinks>(json);
+            Json.IpfsObjectLinks links = _jsonSerializer.Deserialize<Json.IpfsObjectLinks>(json);
 
             return new IpfsObjectLinks
             {
                 Hash = new MultiHash(links.Hash),
-                Links = links.Links?.Select(x => new Link
-                {
-                    Hash = new MultiHash(x.Hash),
-                    Name = x.Name,
-                    Size = x.Size
-                }).ToList()
+                Links = links.Links == null ? null :
+                        links.Links.Select(x => new Link
+                        {
+                            Hash = new MultiHash(x.Hash),
+                            Name = x.Name,
+                            Size = x.Size
+                        }).ToList()
             };
         }
 
@@ -89,23 +89,21 @@ namespace Ipfs.Commands
         /// <returns>The added object key</returns>
         public async Task<MerkleNode> Put(MerkleNode node, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var flags = new Dictionary<string, string>
-            {
-                {"encoding", GetIpfsEncodingValue(IpfsEncoding.Json)},
-                {"datafieldenc", GetIpfsEncodingValue(IpfsEncoding.Base64)}
-            };
+            var flags = new Dictionary<string, string>();
 
+            flags.Add("encoding", GetIpfsEncodingValue(IpfsEncoding.Json));
+            flags.Add("datafieldenc", GetIpfsEncodingValue(IpfsEncoding.Base64));
 
             //Thanks to @slothbag for this snippet
-            var content = new MultipartFormDataContent();
-            string json = JsonSerializer.Serialize(node);
-            var sc = new StringContent(json);
+            MultipartFormDataContent content = new MultipartFormDataContent();
+            string json = _jsonSerializer.Serialize(node);
+            StringContent sc = new StringContent(json);
             sc.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
             content.Add(sc, "file", "file");
 
-            var returnContent = await ExecutePostAsync("put", flags, content, cancellationToken);
+            HttpContent returnContent = await ExecutePostAsync("put", flags, content, cancellationToken);
             string returnJson = await returnContent.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<MerkleNode>(returnJson);
+            return _jsonSerializer.Deserialize<MerkleNode>(returnJson);
         }
 
         /// <summary>
@@ -118,11 +116,11 @@ namespace Ipfs.Commands
         /// <returns></returns>
         public async Task<IpfsObjectStat> Stat(string key, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var content = await ExecuteGetAsync("stat", key, cancellationToken);
+            HttpContent content = await ExecuteGetAsync("stat", key, cancellationToken);
 
             string json = await content.ReadAsStringAsync();
 
-            var ret = JsonSerializer.Deserialize<Json.IpfsObjectStat>(json);
+            Json.IpfsObjectStat ret = _jsonSerializer.Deserialize<Json.IpfsObjectStat>(json);
 
             return new IpfsObjectStat
             {

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
 using Ipfs.Json;
+using System.Threading;
 
 namespace Ipfs.Commands
 {
@@ -33,16 +33,16 @@ namespace Ipfs.Commands
                 flags.Add("quiet", "true");
             }
 
-            var content = await ExecuteGetAsync("gc", flags, cancellationToken);
+            HttpContent content = await ExecuteGetAsync("gc", flags, cancellationToken);
 
             string json = await content.ReadAsStringAsync();
 
-            if (string.IsNullOrEmpty(json))
+            if (String.IsNullOrEmpty(json))
             {
                 return Enumerable.Empty<MultiHash>();
             }
 
-            var keys = JsonSerializer.Deserialize<Dictionary<string, string>>(json);
+            Dictionary<string, string> keys = _jsonSerializer.Deserialize<Dictionary<string, string>>(json);
 
             return keys.Values.Select(x => new MultiHash(x));
         }

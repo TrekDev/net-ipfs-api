@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Ipfs.Json;
+using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Ipfs.Json;
 
 namespace Ipfs.Commands
 {
@@ -25,9 +25,9 @@ namespace Ipfs.Commands
         /// <returns></returns>
         public async Task<IpfsNamePublish> Publish(string name, string ipfsPath, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var content = await ExecuteGetAsync("publish", new[] { name, ipfsPath }, cancellationToken);
+            HttpContent content = await ExecuteGetAsync("publish", new[] { name, ipfsPath }, cancellationToken);
             string json = await content.ReadAsStringAsync();
-            var ret = JsonSerializer.Deserialize<Json.IpfsNamePublish>(json);
+            Json.IpfsNamePublish ret = _jsonSerializer.Deserialize<Json.IpfsNamePublish>(json);
             return new IpfsNamePublish { Name = ret.Name, Value = new MultiHash(ret.Value)};
         }
 
@@ -43,9 +43,9 @@ namespace Ipfs.Commands
         /// <returns></returns>
         public async Task<string> Resolve(string name, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var content = await ExecuteGetAsync("resolve", name, cancellationToken);
+            HttpContent content = await ExecuteGetAsync("resolve", name, cancellationToken);
             string json = await content.ReadAsStringAsync();
-            var resolve = JsonSerializer.Deserialize<IpfsNameResolve>(json);
+            Json.IpfsNameResolve resolve = _jsonSerializer.Deserialize<Json.IpfsNameResolve>(json);
             return resolve.Path;
         }
     }
