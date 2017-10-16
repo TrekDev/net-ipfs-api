@@ -1,9 +1,9 @@
-﻿using Ipfs.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Ipfs.Json;
 
 namespace Ipfs.Commands
 {
@@ -22,7 +22,7 @@ namespace Ipfs.Commands
         /// <param name="interval">time interval to wait between updating output</param>
         /// <param name="cancellationToken">Token allowing you to cancel the request</param>
         /// <returns></returns>
-        public async Task<Json.IpfsStatsBw> Bw(string peer = null, string proto = null, bool poll = false, string interval = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IpfsStatsBw> Bw(string peer = null, string proto = null, bool poll = false, string interval = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var flags = new Dictionary<string, string>();
 
@@ -50,7 +50,7 @@ namespace Ipfs.Commands
 
             string json = await content.ReadAsStringAsync();
 
-            return _jsonSerializer.Deserialize<Json.IpfsStatsBw>(json);
+            return _jsonSerializer.Deserialize<IpfsStatsBw>(json);
         }
     }
 }

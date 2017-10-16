@@ -1,36 +1,25 @@
-﻿using Ipfs.Commands;
-using Ipfs.Json;
-using Ipfs.Utilities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Ipfs.Commands;
+using Ipfs.Json;
+using Ipfs.Utilities;
 
 namespace Ipfs
 {
     public class IpfsClient : IDisposable
     {
-        private static Uri DefaultUri
-        {
-            get { return new Uri("http://127.0.0.1:5001"); }
-        }
+        private static Uri DefaultUri => new Uri("http://127.0.0.1:5001");
 
-        private static HttpClient DefaultHttpClient
-        {
-            get { return new HttpClient(); }
-        }
+        private static HttpClient DefaultHttpClient => new HttpClient();
 
-        private static string DefaultApiPath
-        {
-            get { return "api/v0"; }
-        }
+        private static string DefaultApiPath => "api/v0";
 
-        private static IJsonSerializer DefaultJsonSerializer
-        {
-            get { return new JsonSerializer(); }
-        }
+        private static IJsonSerializer DefaultJsonSerializer => new JsonSerializer();
 
         private readonly Uri _apiUri;
         private readonly HttpClient _httpClient;
@@ -54,18 +43,7 @@ namespace Ipfs
         /// Also availible at the client level with aliases defined below
         /// </summary>
         private IpfsRoot _root;
-        public IpfsRoot Root
-        {
-            get
-            {
-                if (_root == null)
-                {
-                    _root = new IpfsRoot(_apiUri, _httpClient, _jsonSerializer);
-                }
-
-                return _root;
-            }
-        }
+        public IpfsRoot Root => _root ?? (_root = new IpfsRoot(_apiUri, _httpClient, _jsonSerializer));
 
         /// <summary>
         /// A set of commands to manipulate the bitswap agent
@@ -415,6 +393,73 @@ namespace Ipfs
         }
 
         /// <summary>
+        /// Add an object to ipfs.
+        /// Adds the contents of the stream to ipfs
+        /// </summary>
+        /// <param name="name">A name assigned to the object</param>
+        /// <param name="stream">The stream containing the data to be added</param>
+        /// <param name="quiet">Write minimal output</param>
+        /// <param name="trickle">Use trickle-dag format for dag generation</param>
+        /// <param name="cancellationToken">Token allowing you to cancel the request</param>
+        /// <returns></returns>
+        public async Task<MerkleNode> Add(string name, Stream stream, bool quiet = false, bool trickle = false, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            using (var ipfsStream = new IpfsStream(name, stream))
+            {
+                return await Add(ipfsStream, false, quiet, false, trickle, cancellationToken);
+            }
+        }
+
+        /// <summary>
+        /// Add an object to ipfs.
+        /// Adds the contents of the byte[] to ipfs
+        /// </summary>
+        /// <param name="name">A name assigned to the object</param>
+        /// <param name="data">The data to be added</param>
+        /// <param name="quiet">Write minimal output</param>
+        /// <param name="trickle">Use trickle-dag format for dag generation</param>
+        /// <param name="cancellationToken">Token allowing you to cancel the request</param>
+        /// <returns></returns>
+        public async Task<MerkleNode> Add(string name, byte[] data, bool quiet = false, bool trickle = false, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            using (var stream = new MemoryStream(data))
+            {
+                return await Add(name, stream, quiet, trickle, cancellationToken);
+            }
+        }
+
+        /// <summary>
+        /// Add an object, in this case a string, to ipfs.
+        /// The string will be UTF8 encoded
+        /// </summary>
+        /// <param name="name">A name assigned to the object</param>
+        /// <param name="text">The text to be added</param>        
+        /// <param name="quiet">Write minimal output</param>
+        /// <param name="trickle">Use trickle-dag format for dag generation</param>
+        /// <param name="cancellationToken">Token allowing you to cancel the request</param>
+        /// <returns></returns>
+        public async Task<MerkleNode> Add(string name, string text, bool quiet = false, bool trickle = false, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return await Add(name, text, Encoding.UTF8, quiet, trickle, cancellationToken);
+        }
+
+        /// <summary>
+        /// Add an object, in this case a string, to ipfs.
+        /// </summary>
+        /// <param name="name">A name assigned to the object</param>
+        /// <param name="text">The text to be added</param>
+        /// <param name="encoding">The encoding to be used in order to convert the string to bytes</param>
+        /// <param name="quiet">Write minimal output</param>
+        /// <param name="trickle">Use trickle-dag format for dag generation</param>
+        /// <param name="cancellationToken">Token allowing you to cancel the request</param>
+        /// <returns></returns>
+        public async Task<MerkleNode> Add(string name, string text, Encoding encoding, bool quiet = false, bool trickle = false, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var data = encoding.GetBytes(text);
+            return await Add(name, data, quiet, trickle, cancellationToken);
+        }
+        
+        /// <summary>
         /// Show IPFS object data
         /// Retrieves the object named by <ipfs-path> and outputs the data
         /// it contains.
@@ -606,11 +651,14 @@ namespace Ipfs
 
         protected virtual void Dispose(bool disposing)
         {
-            if (_disposed) return;
+            if (_disposed)
+            {
+                return;
+            }
 
             if (disposing)
             {
-                if (_httpClient != null) _httpClient.Dispose();
+                _httpClient?.Dispose();
             }
 
             _disposed = true;
